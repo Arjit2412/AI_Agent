@@ -25,24 +25,10 @@ var CommitChangesDefination = &genai.FunctionDeclaration{
 	Parameters:  CommintChangesInput,
 }
 
-
-
-
-
-
-
-
-
-
-
-
 func CommitChanges(input *genai.FunctionCall) (string, error) {
-
-	
 
 	message, ok := input.Args["message"].(string)
 
-	// If no message provided, auto-generate it
 	if !ok || message == "" {
 		// Step 1: Get staged diff
 		diffCmd := exec.Command("git", "diff", "--cached")
@@ -50,29 +36,25 @@ func CommitChanges(input *genai.FunctionCall) (string, error) {
 		if err != nil {
 			return "", fmt.Errorf("failed to get diff: %v", err)
 		}
-
-		// Step 2: Call genai to summarize changes into a commit message
 		diffText := string(diffOutput)
 		if diffText == "" {
 			return "", fmt.Errorf("no staged changes found to commit")
 		}
 
-		// Step 3: Generate a commit message using genai
 		prompt := fmt.Sprintf("Write a clear, concise Git commit message summarizing the following changes:\n\n%s", diffText)
 		functionCall := &genai.FunctionCall{
 			Args: map[string]interface{}{
 				"message": prompt,
 			},
 		}
-		resp, err := GenerateCommitMessage(functionCall) // You must define this or use genai SDK accordingly
+		resp, err := GenerateCommitMessage(functionCall)
 		if err != nil {
 			return "", fmt.Errorf("AI generation failed: %v", err)
 		}
 
-		message = resp // or resp.Choices[0].Message.Content depending on your SDK
+		message = resp 
 	}
 
-	// Step 4: Run the git commit command
 	cmd := exec.Command("git", "commit", "-m", message)
 	output, err := cmd.CombinedOutput()
 	if err != nil {

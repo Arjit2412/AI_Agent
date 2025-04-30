@@ -51,5 +51,9 @@ func GetTools() []ToolDefinition {
 			Definition: CommitChangesDefination,
 			Function: CommitChanges,
 		},
+		{
+			Definition: ListingRemotesDefination,
+			Function: ListingRemotes,
+		},
 	}
 }

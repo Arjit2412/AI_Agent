@@ -20,6 +20,10 @@ var AddRemoteAndPushInput = &genai.Schema{
 			Type: genai.TypeString,
 			Description: "Name of the branch where user wants to push code remotely,Defaults to current Branch",
 		},
+		"UserName":{
+			Type: genai.TypeString,
+			Description: "Username of the GitHub where user wants to connect",
+		},
 	},
 	Required: []string{"Name"},
 }
@@ -34,19 +38,20 @@ var AddRemoteAndPushDefination = &genai.FunctionDeclaration{
 
 func AddRemoteAndPush(input *genai.FunctionCall) (string, error) {
 
-	username := os.Getenv("GIT_USERNAME")
+	// username := os.Getenv("GIT_USERNAME")
+	username,ok := input.Args["UserName"].(string)
+	if !ok || username==""{
+		username=os.Getenv("GIT_USERNAME")
+	}
 	repoName := input.Args["Name"].(string)
 	branch := input.Args["Branch"].(string)
 
-	// Local directory where the repo is (the path to your local git repo)
 	dir := "./"
 
-	
 	url := fmt.Sprintf("https://github.com/%s/%s.git", username, repoName)
 
-	// Check if remote already exists
 	cmdCheckRemote := exec.Command("git", "remote", "get-url", "origin")
-	cmdCheckRemote.Dir = dir // Set the directory for the repo
+	cmdCheckRemote.Dir = dir 
 
 	// Run the check command to see if remote exists
 	_, err := cmdCheckRemote.CombinedOutput()
@@ -66,9 +71,8 @@ func AddRemoteAndPush(input *genai.FunctionCall) (string, error) {
 		fmt.Println("Remote added successfully")
 	}
 
-	// Step 2: Push to GitHub
 	cmdPush := exec.Command("git", "push", "-u", url, branch)
-	cmdPush.Dir = dir // Set the directory for the repo
+	cmdPush.Dir = dir 
 
 	// Set up authentication using GitHub token for HTTPS
 	cmdPush.Env = append(os.Environ(), "GIT_ASKPASS=echo", "GIT_USERNAME="+username, "GIT_PASSWORD="+os.Getenv("GITHUB_TOKEN"))
