@@ -4,7 +4,6 @@ import (
 	
 	"fmt"
 	"os/exec"
-	
 
 	"google.golang.org/genai"
 )
@@ -29,7 +28,18 @@ var CommitChangesDefination = &genai.FunctionDeclaration{
 
 
 
+
+
+
+
+
+
+
+
 func CommitChanges(input *genai.FunctionCall) (string, error) {
+
+	
+
 	message, ok := input.Args["message"].(string)
 
 	// If no message provided, auto-generate it
