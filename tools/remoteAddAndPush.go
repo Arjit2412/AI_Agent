@@ -16,13 +16,17 @@ var AddRemoteAndPushInput = &genai.Schema{
 			Type: genai.TypeString,
 			Description: "Name of the repo where user wants to push code remotely",
 		},
+		"Branch" : {
+			Type: genai.TypeString,
+			Description: "Name of the branch where user wants to push code remotely,Defaults to current Branch",
+		},
 	},
 	Required: []string{"Name"},
 }
 
 var AddRemoteAndPushDefination = &genai.FunctionDeclaration{
 	Name: "addRemoteAndPush",
-	Description: "Remotely connect to the specific repository and then push code.",
+	Description: "Remotely connect to the specific repository and then push code to specific mentoined branch. If branch is not mentioned push code to the current branch",
 	Parameters: AddRemoteAndPushInput,
 }
 
@@ -32,7 +36,7 @@ func AddRemoteAndPush(input *genai.FunctionCall) (string, error) {
 
 	username := os.Getenv("GIT_USERNAME")
 	repoName := input.Args["Name"].(string)
-	branch := "main"
+	branch := input.Args["Branch"].(string)
 
 	// Local directory where the repo is (the path to your local git repo)
 	dir := "./"
