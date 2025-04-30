@@ -69,7 +69,7 @@ func GenerateCommitMessage(diff string) (string, error) {
 
 	client, err := genai.NewClient(ctx, &genai.ClientConfig{
 		APIKey:  apiKey,
-		Backend: genai.BackendGeminiAPI,
+		// Backend: genai.BackendGeminiAPI,
 	})
 	if err != nil {
 		return "", err
