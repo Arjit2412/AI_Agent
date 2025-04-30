@@ -36,8 +36,9 @@ func ExistingBranches() (string, error){
 func Checkout(input *genai.FunctionCall) (string, error) {
 
 	exisiting_branches,err := ExistingBranches()
-
-	// fmt.Print(exisiting_branches)
+	if err != nil {
+		return "", fmt.Errorf("error: %v", err)
+	}
 
 	name, ok := input.Args["name"].(string)
 	if !ok || name == "" {

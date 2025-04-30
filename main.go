@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	
+
 	"agent/tools"
 
 	"github.com/joho/godotenv"
@@ -19,13 +19,12 @@ func main() {
 		log.Println("No .env file found, continuing with system env vars")
 	}
 
-
 	ctx := context.Background()
 
 	agentTools := tools.GetTools()
 
 	apiKey := os.Getenv("GEMINI_API_KEY")
-	
+
 	client, errInClientGenai := genai.NewClient(ctx, &genai.ClientConfig{
 		APIKey:  apiKey,
 		Backend: genai.BackendGeminiAPI,
@@ -159,7 +158,7 @@ func (a *Agent) runInference(ctx context.Context, conversation []*genai.Part) (*
 		functionDeclarations[i] = tool.Definition
 	}
 	response, err := a.client.Models.GenerateContent(ctx, "gemini-2.5-flash-preview-04-17", []*genai.Content{{Parts: conversation}}, &genai.GenerateContentConfig{
-		SystemInstruction: &genai.Content{Parts: []*genai.Part{{Text: "You are a helpful assistant that can use tools to help the user. Use 'addFile' to add files to the staging area and 'commitChanges' to commit staged files with a message. Always choose the appropriate tool based on the user's intent."}}},
+		SystemInstruction: &genai.Content{Parts: []*genai.Part{{Text: "You are a helpful assistant that can use tools to help the user. Always see if you can use a tool to help the user. If you can't, just answer the question."}}},
 		Tools: []*genai.Tool{
 			{
 				FunctionDeclarations: functionDeclarations,
