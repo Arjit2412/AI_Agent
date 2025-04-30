@@ -1,0 +1,35 @@
+package tools
+
+import (
+	"fmt"
+	"os/exec"
+
+	"google.golang.org/genai"
+)
+
+var GenerateCommitMessageInput = &genai.Schema{
+	Type: genai.TypeObject,
+	Properties: map[string]*genai.Schema{
+		"message": {
+			Type:        genai.TypeString,
+			Description: "Message that has to be given as commit message",
+		},
+	},
+}
+
+var GenerateMessageDefination = &genai.FunctionDeclaration{
+	Name:	"generateCommitMessage",
+	Description: "Whenever the code has to do commit it generates a relevant message",
+	Parameters:  GenerateCommitMessageInput,
+}
+
+func GenerateCommitMessage(input *genai.FunctionCall) (string, error) {
+	cmd := exec.Command("git", "diff", "--cached")
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return "", fmt.Errorf("failed to get diff: %v", err)
+	}
+
+	// Return the diff back to Gemini so it can suggest a commit message
+	return string(output), nil
+}
