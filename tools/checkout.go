@@ -30,7 +30,7 @@ func Checkout(input *genai.FunctionCall) (string, error) {
 		return "Error! Check the name provided", fmt.Errorf("error : %v", ok)
 	}
 
-	cmd := exec.Command("git", "checkout", "-b", name)
+	cmd := exec.Command("git", "checkout", name)
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
