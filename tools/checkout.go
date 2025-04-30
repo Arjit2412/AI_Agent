@@ -20,7 +20,7 @@ var CheckoutInput = &genai.Schema{
 
 var CheckoutDefination = &genai.FunctionDeclaration{
 	Name:        "checkout",
-	Description: "Used to create new features/branches.Creates a new branch if no branch exists with given name or Switch to a Branch with given name. If no name is provided it will give an error",
+	Description: "Creates a new branch if no branch exists with given name or Switch to a Branch with given name. If no name is provided it will give an error",
 	Parameters:  CheckoutInput,
 }
 
