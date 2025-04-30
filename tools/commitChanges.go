@@ -52,6 +52,8 @@ func CommitChanges(input *genai.FunctionCall) (string, error) {
 			return "", fmt.Errorf("AI generation failed: %v", err)
 		}
 
+		
+
 		message = resp 
 	}
 
