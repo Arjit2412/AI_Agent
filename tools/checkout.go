@@ -3,7 +3,7 @@ package tools
 import (
 	"fmt"
 	"os/exec"
-
+	"strings"
 	"google.golang.org/genai"
 )
 
@@ -24,13 +24,38 @@ var CheckoutDefination = &genai.FunctionDeclaration{
 	Parameters:  CheckoutInput,
 }
 
+func ExistingBranches() (string, error){
+	cmd := exec.Command("git", "branch")
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return "", fmt.Errorf("error: %v", err)
+	}
+	return string(output),nil
+}
+
 func Checkout(input *genai.FunctionCall) (string, error) {
+
+	exisiting_branches,err := ExistingBranches()
+
+	// fmt.Print(exisiting_branches)
+
 	name, ok := input.Args["name"].(string)
 	if !ok || name == "" {
 		return "Error! Check the name provided", fmt.Errorf("error : %v", ok)
 	}
 
-	cmd := exec.Command("git", "checkout", name)
+	branches := strings.Split(exisiting_branches,"\n")
+
+	var cmd *exec.Cmd
+
+	for _,branch := range branches{
+		branch = strings.TrimSpace(strings.TrimPrefix(branch,"*"))
+		if branch == name{
+			cmd = exec.Command("git", "checkout", name)
+		}else{
+			cmd = exec.Command("git", "checkout","-b", name)
+		}
+	}
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
