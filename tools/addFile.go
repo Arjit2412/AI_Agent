@@ -20,7 +20,7 @@ var AddFileInput = &genai.Schema{
 
 var AddFileDefination = &genai.FunctionDeclaration{
 	Name:        "addFile",
-	Description: "Adds the files in the staging area. If no file name is provided, add all files to staging area.",
+	Description: "Adds the files in the staging area. If no name is provided, add all files to staging area.",
 	Parameters:  AddFileInput,
 }
 

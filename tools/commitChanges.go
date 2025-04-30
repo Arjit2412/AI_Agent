@@ -15,7 +15,7 @@ var CommintChangesInput = &genai.Schema{
 	Properties: map[string]*genai.Schema{
 		"message": {
 			Type:        genai.TypeString,
-			Description: "message while committing",
+			Description: "message for committing changes",
 		},
 	},
 }

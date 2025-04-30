@@ -7,9 +7,9 @@ require google.golang.org/genai v1.1.0
 require (
 	github.com/ProtonMail/go-crypto v0.0.0-20230217124315-7d5c6f04bbb8 // indirect
 	github.com/cloudflare/circl v1.3.3 // indirect
-	github.com/google/go-github/v55 v55.0.0 // indirect
+	github.com/google/go-github/v55 v55.0.0 // direct
 	github.com/google/go-querystring v1.1.0 // indirect
-	golang.org/x/oauth2 v0.29.0 // indirect
+	golang.org/x/oauth2 v0.29.0 // direct
 )
 
 require (
