@@ -4,7 +4,8 @@ import (
 	
 	"fmt"
 	"os/exec"
-
+	"os"
+	"context"
 	"google.golang.org/genai"
 )
 
@@ -41,20 +42,15 @@ func CommitChanges(input *genai.FunctionCall) (string, error) {
 			return "", fmt.Errorf("no staged changes found to commit")
 		}
 
-		prompt := fmt.Sprintf("Write a clear, concise Git commit message summarizing the following changes:\n\n%s", diffText)
-		functionCall := &genai.FunctionCall{
-			Args: map[string]interface{}{
-				"message": prompt,
-			},
-		}
-		resp, err := GenerateCommitMessage(functionCall)
+		// fmt.Print(functionCall,"is the function call output")
+		resp, err := GenerateCommitMessage(diffText)
 		if err != nil {
 			return "", fmt.Errorf("AI generation failed: %v", err)
 		}
 
 		
 
-		message = resp 
+		message = resp
 	}
 
 	cmd := exec.Command("git", "commit", "-m", message)
@@ -65,6 +61,33 @@ func CommitChanges(input *genai.FunctionCall) (string, error) {
 
 	return string(output), nil
 }
+
+
+func GenerateCommitMessage(diff string) (string, error) {
+	apiKey := os.Getenv("GEMINI_API_KEY")
+	ctx := context.Background()
+
+	client, err := genai.NewClient(ctx, &genai.ClientConfig{
+		APIKey:  apiKey,
+		Backend: genai.BackendGeminiAPI,
+	})
+	if err != nil {
+		return "", err
+	}
+
+	prompt := fmt.Sprintf("Generate a concise Git commit message for the following code changes:\n\n%s", diff)
+
+	resp, err := client.Models.GenerateContent(ctx, "gemini-2.5-flash-preview-04-17", []*genai.Content{
+		{Parts: []*genai.Part{{Text: prompt}}},
+	}, nil)
+
+	if err != nil {
+		return "", err
+	}
+
+	return resp.Text(), nil
+}
+
 
 
 

@@ -44,10 +44,6 @@ func GetTools() []ToolDefinition {
 			Function: AddRemoteAndPush,
 		},
 		{
-			Definition: GenerateMessageDefination,
-			Function: GenerateCommitMessage,
-		},
-		{
 			Definition: CommitChangesDefination,
 			Function: CommitChanges,
 		},
